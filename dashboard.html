@@ -232,6 +232,17 @@
         .admin-only { display: none; }
         body.admin-mode .admin-only { display: table-cell; }
         .status-cell { min-width: 5em; }
+        .status-select {
+            width: 100%;
+            min-width: 6em;
+            background: #1a1a1a;
+            color: #fff;
+            border: 1px solid #333;
+            padding: 6px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            cursor: pointer;
+        }
         .delete-row-btn {
             background: #cc2222;
             color: #fff;
@@ -607,7 +618,7 @@
                 <td contenteditable="true">[Member name]</td>
                 <td contenteditable="true">[Topic]</td>
                 <td contenteditable="true">Low</td>
-                <td contenteditable="true" class="status-cell">New</td>
+                <td class="status-cell"><select class="status-select" onchange="saveQueues()"><option value="New" selected>New</option><option value="In Progress">In Progress</option><option value="Done">Done</option></select></td>
                 <td contenteditable="true">[Response type]</td>
                 <td contenteditable="true">[Notes]</td>
                 <td><button type="button" class="mark-done-btn" onclick="markRowDone(this, 'engagement')">✓ Done</button></td>
@@ -632,7 +643,7 @@
                 <td contenteditable="true">New</td>
                 <td contenteditable="true">[Next action]</td>
                 <td contenteditable="true">[Follow-up date]</td>
-                <td contenteditable="true" class="status-cell">New</td>
+                <td class="status-cell"><select class="status-select" onchange="saveQueues()"><option value="New" selected>New</option><option value="In Progress">In Progress</option><option value="Done">Done</option></select></td>
                 <td contenteditable="true">[Notes]</td>
                 <td><button type="button" class="mark-done-btn" onclick="markRowDone(this, 'dm')">✓ Done</button></td>
                 <td><button type="button" class="delete-row-btn" onclick="deleteQueueRow(this, 'dm')">Delete</button></td>
@@ -665,9 +676,15 @@
             const cells = row.querySelectorAll('td');
             const statusCell = cells[statusIndex];
             if (statusCell) {
-                statusCell.textContent = 'Done';
+                const sel = statusCell.querySelector('select.status-select');
+                if (sel) sel.value = 'Done'; else statusCell.textContent = 'Done';
                 saveQueues();
             }
+        }
+
+        function getCellValue(cell) {
+            const sel = cell.querySelector('select.status-select');
+            return sel ? sel.value : (cell.textContent || '').trim();
         }
 
         function saveTasks() {
@@ -697,7 +714,7 @@
             const engagementRows = [];
             document.querySelectorAll('#engagement-queue tr').forEach(row => {
                 if (!row.querySelector('.placeholder-note')) {
-                    const cells = Array.from(row.querySelectorAll('td')).slice(0, 8).map(cell => cell.textContent.trim());
+                    const cells = Array.from(row.querySelectorAll('td')).slice(0, 8).map(cell => getCellValue(cell));
                     engagementRows.push(cells);
                 }
             });
@@ -706,7 +723,7 @@
             const dmRows = [];
             document.querySelectorAll('#dm-queue tr').forEach(row => {
                 if (!row.querySelector('.placeholder-note')) {
-                    const cells = Array.from(row.querySelectorAll('td')).slice(0, 9).map(cell => cell.textContent.trim());
+                    const cells = Array.from(row.querySelectorAll('td')).slice(0, 9).map(cell => getCellValue(cell));
                     dmRows.push(cells);
                 }
             });
@@ -721,9 +738,11 @@
                 tbody.innerHTML = '';
                 rows.forEach(cells => {
                     const row = document.createElement('tr');
+                    const statusVal = (cells[5] || 'New').trim();
+                    const statusOpt = function(v) { return '<option value="' + escapeHtml(v) + '"' + (statusVal === v ? ' selected' : '') + '>' + escapeHtml(v) + '</option>'; };
                     row.innerHTML = cells.map((cell, i) => {
                         if (i === 5) {
-                            return `<td contenteditable="true" class="status-cell">${escapeHtml(cell || 'New')}</td>`;
+                            return '<td class="status-cell"><select class="status-select" onchange="saveQueues()">' + statusOpt('New') + statusOpt('In Progress') + statusOpt('Done') + '</select></td>';
                         }
                         return `<td contenteditable="true">${escapeHtml(cell || '')}</td>`;
                     }).join('') + '<td><button type="button" class="mark-done-btn" onclick="markRowDone(this, \'engagement\')">✓ Done</button></td><td><button type="button" class="delete-row-btn" onclick="deleteQueueRow(this, \'engagement\')">Delete</button></td>';
@@ -738,9 +757,11 @@
                 tbody.innerHTML = '';
                 rows.forEach(cells => {
                     const row = document.createElement('tr');
+                    const statusVal = (cells[7] || 'New').trim();
+                    const statusOpt = function(v) { return '<option value="' + escapeHtml(v) + '"' + (statusVal === v ? ' selected' : '') + '>' + escapeHtml(v) + '</option>'; };
                     row.innerHTML = cells.map((cell, i) => {
                         if (i === 7) {
-                            return `<td contenteditable="true" class="status-cell">${escapeHtml(cell || 'New')}</td>`;
+                            return '<td class="status-cell"><select class="status-select" onchange="saveQueues()">' + statusOpt('New') + statusOpt('In Progress') + statusOpt('Done') + '</select></td>';
                         }
                         return `<td contenteditable="true">${escapeHtml(cell || '')}</td>`;
                     }).join('') + '<td><button type="button" class="mark-done-btn" onclick="markRowDone(this, \'dm\')">✓ Done</button></td><td><button type="button" class="delete-row-btn" onclick="deleteQueueRow(this, \'dm\')">Delete</button></td>';
@@ -840,7 +861,7 @@
             out += engagementHeaders + '\n';
             document.querySelectorAll('#engagement-queue tr').forEach(row => {
                 if (row.querySelector('.placeholder-note')) return;
-                const cells = Array.from(row.querySelectorAll('td')).slice(0, 8).map(c => c.textContent.trim());
+                const cells = Array.from(row.querySelectorAll('td')).slice(0, 8).map(c => getCellValue(c));
                 out += cells.join(' | ') + '\n';
             });
             out += '\n';
@@ -850,7 +871,7 @@
             out += dmHeaders + '\n';
             document.querySelectorAll('#dm-queue tr').forEach(row => {
                 if (row.querySelector('.placeholder-note')) return;
-                const cells = Array.from(row.querySelectorAll('td')).slice(0, 9).map(c => c.textContent.trim());
+                const cells = Array.from(row.querySelectorAll('td')).slice(0, 9).map(c => getCellValue(c));
                 out += cells.join(' | ') + '\n';
             });
             out += '\n';
