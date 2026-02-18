@@ -329,15 +329,6 @@
     <div class="container">
         <h1>🎯 VA Command Center</h1>
 
-        <!-- For Emmanuel: How you see what she does -->
-        <div class="for-emmanuel-box">
-            <h2>👤 For Emmanuel – How you see what she does</h2>
-            <p style="color: #aaa; margin-bottom: 15px;">There is <strong>one link</strong> for everyone (no separate admin panel). Your VA uses this same page. You see her work when she pastes the <strong>end-of-shift report</strong> into your shared Google Doc.</p>
-            <p style="color: #aaa; margin-bottom: 10px;"><strong>Your workflow:</strong> Open the shared Doc (link below) to see her tasks done, queues, metrics, and handoff note. She clicks “Generate report for Emmanuel” → “Copy report” → pastes into the Doc after each shift.</p>
-            <label style="color: #888; font-size: 0.9em;">Quick link to shared Google Doc (paste your Doc URL here):</label>
-            <input type="url" id="emmanuel-doc-link" placeholder="https://docs.google.com/document/d/..." style="width: 100%; margin-top: 6px; padding: 10px; background: #1a1a1a; color: #fff; border: 1px solid #333; border-radius: 4px;">
-            <button type="button" class="add-item-btn" onclick="openEmmanuelDoc()" style="margin-top: 10px; background: #0066aa;">Open shared Doc</button>
-        </div>
 
         <!-- Today's 2-Hour Plan -->
         <div class="today-tasks">
@@ -509,6 +500,12 @@
             <span class="admin-only"><strong>Admin mode on.</strong></span>
             <a href="#" id="admin-toggle" style="color: #666;" onclick="toggleAdmin(); return false;">Unlock admin</a>
         </p>
+
+        <div class="for-emmanuel-box" style="margin-top: 30px;">
+            <h2>👤 For Emmanuel</h2>
+            <input type="url" id="emmanuel-doc-link" placeholder="Paste shared Doc link here" style="width: 100%; margin-top: 8px; padding: 10px; background: #1a1a1a; color: #fff; border: 1px solid #333; border-radius: 4px;">
+            <button type="button" class="add-item-btn" onclick="openEmmanuelDoc()" style="margin-top: 10px; background: #0066aa;">Open shared Doc</button>
+        </div>
     </div>
 
     <script>
