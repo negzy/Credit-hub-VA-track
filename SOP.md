@@ -5,6 +5,22 @@ This Command Center helps you stay organized during your 2-hour shifts, 3 days p
 
 ---
 
+## Functionality at a glance (everything you need)
+
+| What you need | Where it is | What you do |
+|---------------|-------------|-------------|
+| **Today’s 2-hour plan** | Top of dashboard | Check off each task; use “Reset Daily Tasks” to start fresh. |
+| **Engagement Queue (Skool comments)** | First table | Add row (+ Add Comment), edit any cell, use **✓ Done** to set status to Done, or type Status: New / In Progress / Done. **Delete** if you added by mistake. |
+| **DM + Follow-up Queue** | Second table | Same: add (+ Add DM), **✓ Done** for quick Done, edit Status, Delete if mistake. |
+| **Quick Metrics** | Metrics section | Click each number to edit; update at end of shift. |
+| **Templates** | Templates section | Click a template (or “Copy”) to copy; paste into Skool/DM and customize. |
+| **Post Guidelines** | Post Guidelines | Read before posting; rules are in the boxes (Emmanuel fills these). |
+| **Handoff note** | End-of-shift box | Type your note, click “Save Handoff Note”. |
+| **Report for Emmanuel** | Same box | Click “Generate report for Emmanuel” → “Copy report” → paste into shared Google Doc (or email/Slack). |
+| **Status on queue rows** | Status column in each table | Click the status cell and type: **New**, **In Progress**, or **Done**. |
+
+---
+
 ## Daily Workflow (2-Hour Shift)
 
 ### **Start of Shift (5 minutes)**
@@ -88,7 +104,12 @@ This Command Center helps you stay organized during your 2-hour shifts, 3 days p
    - Calls Booked: Count any calls that were booked
    - Upgrades: Count any upgrades that happened
 
-2. **Write Handoff Note:**
+2. **Generate report for Emmanuel:**
+   - Click **“Generate report for Emmanuel”** (in the handoff section).
+   - Click **“Copy report”** and paste the report into your shared Google Doc (or email/Slack).
+   - Emmanuel uses this to see tasks done, queues, metrics, and your handoff note. Do this every shift.
+
+3. **Write Handoff Note:**
    Use this format:
    ```
    ✅ Completed:
@@ -105,7 +126,7 @@ This Command Center helps you stay organized during your 2-hour shifts, 3 days p
    - [Any observations or suggestions]
    ```
 
-3. Click "Save Handoff Note"
+4. Click "Save Handoff Note"
 
 ---
 
@@ -141,6 +162,12 @@ This Command Center helps you stay organized during your 2-hour shifts, 3 days p
    - Make it sound human, not robotic
 
 **Important:** Templates are starting points. Always personalize them!
+
+---
+
+## Deleting queue items
+
+- You can **delete** a row if you added it by mistake: click **Delete** on that row and confirm. Use this for duplicates or wrong entries. Data is saved automatically.
 
 ---
 

@@ -229,6 +229,51 @@
             background: #ff8800;
         }
 
+        .admin-only { display: none; }
+        body.admin-mode .admin-only { display: table-cell; }
+        .status-cell { min-width: 5em; }
+        .delete-row-btn {
+            background: #cc2222;
+            color: #fff;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+        .delete-row-btn:hover { background: #ff4444; }
+        .mark-done-btn {
+            background: #00aa00;
+            color: #fff;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+        .mark-done-btn:hover { background: #00cc00; }
+        .for-emmanuel-box {
+            background: #1a1a2e;
+            border: 2px solid #0066aa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .for-emmanuel-box h2 { color: #0066aa; }
+        .report-box {
+            background: #0a0a0a;
+            border: 2px solid #00aa00;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 0.85em;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .report-actions { margin-top: 10px; }
+
         .handoff-box {
             background: #1a3a1a;
             border: 2px solid #00aa00;
@@ -284,6 +329,16 @@
     <div class="container">
         <h1>🎯 VA Command Center</h1>
 
+        <!-- For Emmanuel: How you see what she does -->
+        <div class="for-emmanuel-box">
+            <h2>👤 For Emmanuel – How you see what she does</h2>
+            <p style="color: #aaa; margin-bottom: 15px;">There is <strong>one link</strong> for everyone (no separate admin panel). Your VA uses this same page. You see her work when she pastes the <strong>end-of-shift report</strong> into your shared Google Doc.</p>
+            <p style="color: #aaa; margin-bottom: 10px;"><strong>Your workflow:</strong> Open the shared Doc (link below) to see her tasks done, queues, metrics, and handoff note. She clicks “Generate report for Emmanuel” → “Copy report” → pastes into the Doc after each shift.</p>
+            <label style="color: #888; font-size: 0.9em;">Quick link to shared Google Doc (paste your Doc URL here):</label>
+            <input type="url" id="emmanuel-doc-link" placeholder="https://docs.google.com/document/d/..." style="width: 100%; margin-top: 6px; padding: 10px; background: #1a1a1a; color: #fff; border: 1px solid #333; border-radius: 4px;">
+            <button type="button" class="add-item-btn" onclick="openEmmanuelDoc()" style="margin-top: 10px; background: #0066aa;">Open shared Doc</button>
+        </div>
+
         <!-- Today's 2-Hour Plan -->
         <div class="today-tasks">
             <h2>📋 Today's 2-Hour Plan</h2>
@@ -325,7 +380,7 @@
         <!-- Engagement Queue -->
         <div class="section">
             <h2>💬 Engagement Queue (Skool Comments)</h2>
-            <p style="color: #aaa; margin-bottom: 15px;">Track comments that need replies. Add items manually or import from Google Sheet.</p>
+            <p style="color: #aaa; margin-bottom: 15px;">Track comments that need replies. Add items (+ Add Comment), edit any cell, set Status to <strong>New</strong> / <strong>In Progress</strong> / <strong>Done</strong>. Use Delete if you added a row by mistake.</p>
             <table class="queue-table">
                 <thead>
                     <tr>
@@ -337,11 +392,13 @@
                         <th>Status</th>
                         <th>Response Type</th>
                         <th>Notes</th>
+                        <th>Mark done</th>
+                        <th>Delete</th>
                     </tr>
                 </thead>
                 <tbody id="engagement-queue">
                     <tr>
-                        <td colspan="8" class="placeholder-note">No items yet. Add items manually below or import from Google Sheet.</td>
+                        <td colspan="10" class="placeholder-note">No items yet. Add items manually below or import from Google Sheet.</td>
                     </tr>
                 </tbody>
             </table>
@@ -351,7 +408,7 @@
         <!-- DM + Follow-up Queue -->
         <div class="section">
             <h2>📩 DM + Follow-up Queue (Emmanuel Admin)</h2>
-            <p style="color: #aaa; margin-bottom: 15px;">Track DMs and follow-ups. Remember: ONE question only, then direct to next step.</p>
+            <p style="color: #aaa; margin-bottom: 15px;">Track DMs and follow-ups. Add items (+ Add DM), edit any cell, update Status. Remember: ONE question only, then direct to next step. Use Delete for mistakes.</p>
             <table class="queue-table">
                 <thead>
                     <tr>
@@ -364,11 +421,13 @@
                         <th>Follow-up Date</th>
                         <th>Status</th>
                         <th>Notes</th>
+                        <th>Mark done</th>
+                        <th>Delete</th>
                     </tr>
                 </thead>
                 <tbody id="dm-queue">
                     <tr>
-                        <td colspan="9" class="placeholder-note">No items yet. Add items manually below or import from Google Sheet.</td>
+                        <td colspan="11" class="placeholder-note">No items yet. Add items manually below or import from Google Sheet.</td>
                     </tr>
                 </tbody>
             </table>
@@ -434,7 +493,22 @@
             <p style="color: #aaa; margin-bottom: 10px;">Leave a note for Emmanuel about what was done and what needs attention.</p>
             <textarea id="handoff-note" placeholder="Example: Completed all comments in queue. 3 new DMs need follow-up tomorrow. 2 members asked about Credit GPS - sent links. One urgent question about funding timeline - needs your response."></textarea>
             <button class="add-item-btn" onclick="saveHandoff()" style="margin-top: 10px; background: #00aa00; color: #fff;">💾 Save Handoff Note</button>
+            <h4 style="color: #00ff00; margin-top: 20px; margin-bottom: 10px;">📋 Send to Emmanuel</h4>
+            <p style="color: #aaa; margin-bottom: 10px;">At end of shift: click below, then copy the report and paste it into your shared Google Doc (or email/Slack) so Emmanuel can see everything.</p>
+            <button class="add-item-btn" onclick="generateReport()" style="background: #0066aa;">Generate report for Emmanuel</button>
+            <div id="report-container" style="display: none;">
+                <div id="report-output" class="report-box"></div>
+                <div class="report-actions">
+                    <button class="add-item-btn" id="copy-report-btn" onclick="copyReport()">Copy report</button>
+                    <button class="add-item-btn" onclick="downloadReport()" style="background: #333;">Download as .txt</button>
+                    <button class="add-item-btn" onclick="document.getElementById('report-container').style.display='none'" style="background: #333;">Close</button>
+                </div>
+            </div>
         </div>
+        <p style="text-align: center; margin-top: 20px; color: #666; font-size: 0.9em;">
+            <span class="admin-only"><strong>Admin mode on.</strong></span>
+            <a href="#" id="admin-toggle" style="color: #666;" onclick="toggleAdmin(); return false;">Unlock admin</a>
+        </p>
     </div>
 
     <script>
@@ -536,9 +610,11 @@
                 <td contenteditable="true">[Member name]</td>
                 <td contenteditable="true">[Topic]</td>
                 <td contenteditable="true">Low</td>
-                <td><span class="status-badge status-new">New</span></td>
+                <td contenteditable="true" class="status-cell">New</td>
                 <td contenteditable="true">[Response type]</td>
                 <td contenteditable="true">[Notes]</td>
+                <td><button type="button" class="mark-done-btn" onclick="markRowDone(this, 'engagement')">✓ Done</button></td>
+                <td><button type="button" class="delete-row-btn" onclick="deleteQueueRow(this, 'engagement')">Delete</button></td>
             `;
             const tbody = document.getElementById('engagement-queue');
             if (tbody.querySelector('.placeholder-note')) {
@@ -559,8 +635,10 @@
                 <td contenteditable="true">New</td>
                 <td contenteditable="true">[Next action]</td>
                 <td contenteditable="true">[Follow-up date]</td>
-                <td><span class="status-badge status-new">New</span></td>
+                <td contenteditable="true" class="status-cell">New</td>
                 <td contenteditable="true">[Notes]</td>
+                <td><button type="button" class="mark-done-btn" onclick="markRowDone(this, 'dm')">✓ Done</button></td>
+                <td><button type="button" class="delete-row-btn" onclick="deleteQueueRow(this, 'dm')">Delete</button></td>
             `;
             const tbody = document.getElementById('dm-queue');
             if (tbody.querySelector('.placeholder-note')) {
@@ -568,6 +646,31 @@
             }
             tbody.appendChild(row);
             saveQueues();
+        }
+
+        function deleteQueueRow(btn, queue) {
+            if (!confirm('Remove this row? (Use this if you added it by mistake.)')) return;
+            btn.closest('tr').remove();
+            const tbody = queue === 'engagement' ? document.getElementById('engagement-queue') : document.getElementById('dm-queue');
+            if (tbody.querySelectorAll('tr').length === 0) {
+                const placeholder = document.createElement('tr');
+                placeholder.innerHTML = queue === 'engagement'
+                    ? '<td colspan="10" class="placeholder-note">No items yet. Add items manually below or import from Google Sheet.</td>'
+                    : '<td colspan="11" class="placeholder-note">No items yet. Add items manually below or import from Google Sheet.</td>';
+                tbody.appendChild(placeholder);
+            }
+            saveQueues();
+        }
+
+        function markRowDone(btn, queue) {
+            const row = btn.closest('tr');
+            const statusIndex = queue === 'engagement' ? 5 : 7;
+            const cells = row.querySelectorAll('td');
+            const statusCell = cells[statusIndex];
+            if (statusCell) {
+                statusCell.textContent = 'Done';
+                saveQueues();
+            }
         }
 
         function saveTasks() {
@@ -594,21 +697,19 @@
         }
 
         function saveQueues() {
-            // Save engagement queue
             const engagementRows = [];
             document.querySelectorAll('#engagement-queue tr').forEach(row => {
                 if (!row.querySelector('.placeholder-note')) {
-                    const cells = Array.from(row.querySelectorAll('td')).map(cell => cell.textContent.trim());
+                    const cells = Array.from(row.querySelectorAll('td')).slice(0, 8).map(cell => cell.textContent.trim());
                     engagementRows.push(cells);
                 }
             });
             localStorage.setItem('va-engagement-queue', JSON.stringify(engagementRows));
 
-            // Save DM queue
             const dmRows = [];
             document.querySelectorAll('#dm-queue tr').forEach(row => {
                 if (!row.querySelector('.placeholder-note')) {
-                    const cells = Array.from(row.querySelectorAll('td')).map(cell => cell.textContent.trim());
+                    const cells = Array.from(row.querySelectorAll('td')).slice(0, 9).map(cell => cell.textContent.trim());
                     dmRows.push(cells);
                 }
             });
@@ -616,7 +717,6 @@
         }
 
         function loadQueues() {
-            // Load engagement queue
             const engagement = localStorage.getItem('va-engagement-queue');
             if (engagement) {
                 const rows = JSON.parse(engagement);
@@ -625,16 +725,15 @@
                 rows.forEach(cells => {
                     const row = document.createElement('tr');
                     row.innerHTML = cells.map((cell, i) => {
-                        if (i === 5) { // Status column
-                            return `<td><span class="status-badge status-${cell.toLowerCase().replace(' ', '-')}">${cell}</span></td>`;
+                        if (i === 5) {
+                            return `<td contenteditable="true" class="status-cell">${escapeHtml(cell || 'New')}</td>`;
                         }
-                        return `<td contenteditable="true">${cell}</td>`;
-                    }).join('');
+                        return `<td contenteditable="true">${escapeHtml(cell || '')}</td>`;
+                    }).join('') + '<td><button type="button" class="mark-done-btn" onclick="markRowDone(this, \'engagement\')">✓ Done</button></td><td><button type="button" class="delete-row-btn" onclick="deleteQueueRow(this, \'engagement\')">Delete</button></td>';
                     tbody.appendChild(row);
                 });
             }
 
-            // Load DM queue
             const dm = localStorage.getItem('va-dm-queue');
             if (dm) {
                 const rows = JSON.parse(dm);
@@ -643,14 +742,20 @@
                 rows.forEach(cells => {
                     const row = document.createElement('tr');
                     row.innerHTML = cells.map((cell, i) => {
-                        if (i === 7) { // Status column
-                            return `<td><span class="status-badge status-${cell.toLowerCase().replace(' ', '-')}">${cell}</span></td>`;
+                        if (i === 7) {
+                            return `<td contenteditable="true" class="status-cell">${escapeHtml(cell || 'New')}</td>`;
                         }
-                        return `<td contenteditable="true">${cell}</td>`;
-                    }).join('');
+                        return `<td contenteditable="true">${escapeHtml(cell || '')}</td>`;
+                    }).join('') + '<td><button type="button" class="mark-done-btn" onclick="markRowDone(this, \'dm\')">✓ Done</button></td><td><button type="button" class="delete-row-btn" onclick="deleteQueueRow(this, \'dm\')">Delete</button></td>';
                     tbody.appendChild(row);
                 });
             }
+        }
+
+        function escapeHtml(s) {
+            const div = document.createElement('div');
+            div.textContent = s;
+            return div.innerHTML;
         }
 
         function saveMetrics() {
@@ -702,6 +807,110 @@
             if (adminRules) document.getElementById('admin-rules').textContent = adminRules;
         }
 
+        function openEmmanuelDoc() {
+            const url = document.getElementById('emmanuel-doc-link').value.trim();
+            if (url) {
+                window.open(url, '_blank');
+            } else {
+                alert('Paste your shared Google Doc link in the box above first.');
+            }
+        }
+
+        function loadEmmanuelDocLink() {
+            const saved = localStorage.getItem('va-emmanuel-doc-link');
+            if (saved && document.getElementById('emmanuel-doc-link')) {
+                document.getElementById('emmanuel-doc-link').value = saved;
+            }
+        }
+
+        var ADMIN_PASS = 'admin'; // Change this in the file if you want a different passphrase
+
+        function generateReport() {
+            const date = new Date().toLocaleString();
+            let out = 'VA COMMAND CENTER – END OF SHIFT REPORT\n';
+            out += 'Generated: ' + date + '\n\n';
+
+            out += '--- TASKS COMPLETED ---\n';
+            document.querySelectorAll('#today-tasks-list .task-item').forEach(item => {
+                const name = item.querySelector('.task-time').nextSibling.textContent.trim();
+                const done = item.querySelector('input').checked;
+                out += (done ? '[x] ' : '[ ] ') + name + '\n';
+            });
+            out += '\n';
+
+            out += '--- ENGAGEMENT QUEUE (Skool) ---\n';
+            const engagementHeaders = 'Date | Link | Member | Topic | Priority | Status | Response type | Notes';
+            out += engagementHeaders + '\n';
+            document.querySelectorAll('#engagement-queue tr').forEach(row => {
+                if (row.querySelector('.placeholder-note')) return;
+                const cells = Array.from(row.querySelectorAll('td')).slice(0, 8).map(c => c.textContent.trim());
+                out += cells.join(' | ') + '\n';
+            });
+            out += '\n';
+
+            out += '--- DM + FOLLOW-UP QUEUE ---\n';
+            const dmHeaders = 'Date | Platform | Name | What they asked | Qualification | Next action | Follow-up date | Status | Notes';
+            out += dmHeaders + '\n';
+            document.querySelectorAll('#dm-queue tr').forEach(row => {
+                if (row.querySelector('.placeholder-note')) return;
+                const cells = Array.from(row.querySelectorAll('td')).slice(0, 9).map(c => c.textContent.trim());
+                out += cells.join(' | ') + '\n';
+            });
+            out += '\n';
+
+            out += '--- QUICK METRICS ---\n';
+            document.querySelectorAll('.metric-box').forEach(box => {
+                const label = box.querySelector('.metric-label').textContent.trim();
+                const value = box.querySelector('.metric-value').textContent.trim();
+                out += label + ': ' + value + '\n';
+            });
+            out += '\n';
+
+            out += '--- HANDOFF NOTE ---\n';
+            out += (document.getElementById('handoff-note').value || '(none)') + '\n';
+
+            document.getElementById('report-output').textContent = out;
+            document.getElementById('report-container').style.display = 'block';
+        }
+
+        function copyReport() {
+            const text = document.getElementById('report-output').textContent;
+            const btn = document.getElementById('copy-report-btn');
+            if (!btn) return;
+            navigator.clipboard.writeText(text).then(() => {
+                const orig = btn.textContent;
+                btn.textContent = 'Copied!';
+                setTimeout(() => { btn.textContent = orig; }, 2000);
+            });
+        }
+
+        function downloadReport() {
+            const text = document.getElementById('report-output').textContent;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'va-shift-report-' + new Date().toISOString().slice(0, 10) + '.txt';
+            a.click();
+            URL.revokeObjectURL(a.href);
+        }
+
+        function toggleAdmin() {
+            if (document.body.classList.contains('admin-mode')) {
+                document.body.classList.remove('admin-mode');
+                sessionStorage.removeItem('va-admin');
+                document.getElementById('admin-toggle').textContent = 'Unlock admin';
+                return;
+            }
+            const pass = prompt('Admin passphrase:');
+            if (pass === ADMIN_PASS) {
+                document.body.classList.add('admin-mode');
+                sessionStorage.setItem('va-admin', '1');
+                document.getElementById('admin-toggle').textContent = 'Lock admin';
+            } else if (pass !== null) {
+                alert('Incorrect passphrase.');
+            }
+        }
+
         // Auto-save on content edit
         document.addEventListener('DOMContentLoaded', () => {
             loadTasks();
@@ -710,6 +919,13 @@
             loadHandoff();
             loadGuidelines();
             loadTemplates();
+            loadEmmanuelDocLink();
+            var docLinkEl = document.getElementById('emmanuel-doc-link');
+            if (docLinkEl) docLinkEl.addEventListener('blur', function() { localStorage.setItem('va-emmanuel-doc-link', this.value.trim()); });
+            if (sessionStorage.getItem('va-admin') === '1') {
+                document.body.classList.add('admin-mode');
+                document.getElementById('admin-toggle').textContent = 'Lock admin';
+            }
 
             // Auto-save queues on edit
             document.getElementById('engagement-queue').addEventListener('blur', saveQueues, true);

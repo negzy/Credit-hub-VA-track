@@ -104,11 +104,11 @@
 5. Updates Quick Metrics at end of shift
 6. Writes handoff note for you
 
-### For You:
-1. Review handoff notes at end of each shift
-2. Check Quick Metrics to see what was accomplished
-3. Review queues if needed (or sync with Google Sheets)
-4. Update templates/guidelines as needed
+### For You (Emmanuel):
+1. **Same link** – there is no separate admin panel. You and your VA use the same dashboard URL.
+2. **How you see what she does:** She pastes the end-of-shift report into a **shared Google Doc**. Open that Doc to see her tasks done, queues, metrics, and handoff note.
+3. On the dashboard, paste your shared Google Doc link in the **“For Emmanuel”** box and click **Open shared Doc** for a one-click shortcut.
+4. Update templates/guidelines as needed in the dashboard or in `templates.txt`.
 
 ---
 
