@@ -354,13 +354,7 @@
                 <option value="Elmo">Elmo</option>
                 <option value="Soc">Soc</option>
             </select>
-            <span style="color: #666; margin-left: 12px; font-size: 0.9em;">(Your name will appear on the report so Emmanuel knows who did what.)</span>
-        </div>
-
-        <div class="section" style="margin-top: 15px;">
-            <h3 style="color: #ff8800;">📌 Today's split (who does what)</h3>
-            <p style="color: #aaa; font-size: 0.9em; margin-bottom: 8px;">Who does what today (e.g. "Elmo: Comments + Welcome · Soc: DMs + Post"). Saves on this device only — to share with both VAs, put the split in your shared Doc or message them.</p>
-            <div id="today-split" contenteditable="true" style="min-height: 50px; padding: 12px; background: #1a1a1a; border: 1px solid #333; border-radius: 4px; color: #fff;"></div>
+            <span style="color: #666; margin-left: 12px; font-size: 0.9em;">(Report will say "Report from: [your name]". To add more VAs: edit this file and add an option.)</span>
         </div>
 
         <!-- Today's 2-Hour Plan -->
@@ -518,7 +512,7 @@
             <textarea id="handoff-note" placeholder="Example: Completed all comments in queue. 3 new DMs need follow-up tomorrow. 2 members asked about Credit GPS - sent links. One urgent question about funding timeline - needs your response."></textarea>
             <button class="add-item-btn" onclick="saveHandoff()" style="margin-top: 10px; background: #00aa00; color: #fff;">💾 Save Handoff Note</button>
             <h4 style="color: #00ff00; margin-top: 20px; margin-bottom: 10px;">📋 Send to Emmanuel</h4>
-            <p style="color: #aaa; margin-bottom: 10px;">At end of shift: click below, then copy the report and paste it into your shared Google Doc (or email/Slack) so Emmanuel can see everything.</p>
+            <p style="color: #aaa; margin-bottom: 10px;">At end of shift: generate report, copy it, and paste into the <strong>shared Doc</strong>. Same Doc for all VAs (Elmo, Soc, etc.) — Emmanuel pastes the link in "For Emmanuel" below.</p>
             <button class="add-item-btn" onclick="generateReport()" style="background: #0066aa;">Generate report for Emmanuel</button>
             <div id="report-container" style="display: none;">
                 <div id="report-output" class="report-box"></div>
@@ -536,6 +530,7 @@
 
         <div class="for-emmanuel-box" style="margin-top: 30px;">
             <h2>👤 For Emmanuel</h2>
+            <p style="color: #888; font-size: 0.9em; margin-bottom: 8px;">One shared Doc for all VAs. Paste the link once; Elmo, Soc, and any future VAs all paste their reports into this same Doc.</p>
             <input type="url" id="emmanuel-doc-link" placeholder="Paste shared Doc link here" style="width: 100%; margin-top: 8px; padding: 10px; background: #1a1a1a; color: #fff; border: 1px solid #333; border-radius: 4px;">
             <button type="button" class="add-item-btn" onclick="openEmmanuelDoc()" style="margin-top: 10px; background: #0066aa;">Open shared Doc</button>
         </div>
@@ -874,16 +869,6 @@
             var el = document.getElementById('va-name');
             if (el && saved) el.value = saved;
         }
-        function saveTodaySplit() {
-            var el = document.getElementById('today-split');
-            if (el) localStorage.setItem('va-today-split', el.innerHTML);
-        }
-        function loadTodaySplit() {
-            var saved = localStorage.getItem('va-today-split');
-            var el = document.getElementById('today-split');
-            if (el && saved) el.innerHTML = saved;
-        }
-
         function generateReport() {
             const date = new Date().toLocaleString();
             const vaName = (document.getElementById('va-name') && document.getElementById('va-name').value) || 'VA';
@@ -983,7 +968,6 @@
             loadTemplates();
             loadEmmanuelDocLink();
             loadVAName();
-            loadTodaySplit();
             var docLinkEl = document.getElementById('emmanuel-doc-link');
             if (docLinkEl) docLinkEl.addEventListener('blur', function() { localStorage.setItem('va-emmanuel-doc-link', this.value.trim()); });
             if (sessionStorage.getItem('va-admin') === '1') {
@@ -998,8 +982,6 @@
             // Auto-save guidelines
             document.getElementById('skool-rules').addEventListener('blur', saveGuidelines);
             document.getElementById('admin-rules').addEventListener('blur', saveGuidelines);
-            var todaySplitEl = document.getElementById('today-split');
-            if (todaySplitEl) todaySplitEl.addEventListener('blur', saveTodaySplit);
         });
 
         // Check if it's a new day and reset tasks

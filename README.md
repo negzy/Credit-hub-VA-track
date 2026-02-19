@@ -105,14 +105,20 @@
 6. Writes handoff note for you
 
 ### For You (Emmanuel):
-1. **Same link** – there is no separate admin panel. You and your VA use the same dashboard URL.
-2. **How you see what she does:** She pastes the end-of-shift report into a **shared Google Doc**. Open that Doc to see her tasks done, queues, metrics, and handoff note.
+1. **Same link** – no separate admin panel. You and all VAs use the same dashboard URL.
+2. **One shared Doc for all VAs** – Paste your Google Doc link in "For Emmanuel" at the bottom. Every VA (Elmo, Soc, etc.) pastes their report into that same Doc. Each report is labeled "Report from: [name]".
 3. On the dashboard, paste your shared Google Doc link in the **“For Emmanuel”** box and click **Open shared Doc** for a one-click shortcut.
 4. Update templates/guidelines as needed in the dashboard or in `templates.txt`.
 
 ---
 
 ## 🔧 Customization
+
+### Adding a new VA:
+1. Open `dashboard.html` in a text editor.
+2. Find the `<select id="va-name">` dropdown (search for "va-name").
+3. Add a new line: `<option value="TheirName">TheirName</option>` (e.g. `<option value="Jordan">Jordan</option>`).
+4. Save and push to GitHub (or refresh if local). They select their name and reports will say "Report from: TheirName". Same shared Doc for everyone.
 
 ### Adding New Templates:
 1. Open `templates.txt`
