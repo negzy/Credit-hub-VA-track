@@ -17,7 +17,19 @@ This Command Center helps you stay organized during your 2-hour shifts, 3 days p
 | **Post Guidelines** | Post Guidelines | Read before posting; rules are in the boxes (Emmanuel fills these). |
 | **Handoff note** | End-of-shift box | Type your note, click “Save Handoff Note”. |
 | **Report for Emmanuel** | Same box | Click “Generate report for Emmanuel” → “Copy report” → paste into shared Google Doc (or email/Slack). |
-| **Status on queue rows** | Status column in each table | Click the status cell and type: **New**, **In Progress**, or **Done**. |
+| **Status on queue rows** | Status column in each table | Use the dropdown: **New**, **In Progress**, or **Done**. |
+| **I am (VA name)** | Top of dashboard | Select "Elmo" or "Soc" so your report shows who did the work. |
+| **Today's split** | Below VA name | See who does what today (if Emmanuel added it). Avoid doing the same tasks as the other VA. |
+
+---
+
+## When there are 2 VAs
+
+- **Same link, same dashboard** — you both use the same URL. Your tasks and queues are on your own device (they don't sync between you).
+- **Always set "I am: Elmo" or "Soc"** at the top so the report says "Report from: Elmo" or "Report from: Soc". Emmanuel needs to see who did what.
+- **One shared Google Doc** — both of you paste your end-of-shift report into the same Doc. Paste under your name or add a line like "Report from: Elmo" so it's clear.
+- **Avoid overlap:** Check the shared Doc or "Today's split" (if Emmanuel filled it) to see who's doing comments vs DMs vs post. If unsure, split by time (e.g. Elmo morning, Soc afternoon) or by queue (Elmo = Engagement, Soc = DMs).
+- **Queues:** If you both need to see the same list (so you don't reply to the same comment), use one shared Google Sheet for Engagement + DM queues and each of you update it. You can still use the dashboard for templates, tasks, and your own report.
 
 ---
 
