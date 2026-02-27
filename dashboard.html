@@ -278,6 +278,22 @@
             padding: 12px 16px;
             margin-bottom: 15px;
         }
+        .shift-time-box {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+        .shift-time-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        .shift-label {
+            color: #aaa;
+        }
         .report-box {
             background: #0a0a0a;
             border: 2px solid #00aa00;
@@ -355,6 +371,18 @@
                 <option value="Soc">Soc</option>
             </select>
             <span style="color: #666; margin-left: 12px; font-size: 0.9em;">(Report will say "Report from: [your name]". To add more VAs: edit this file and add an option.)</span>
+        </div>
+
+        <div class="shift-time-box">
+            <h3 style="color: #ff8800; margin-bottom: 8px;">⏱ Shift time</h3>
+            <p style="color: #aaa; margin-bottom: 8px;">Click <strong>Clock In</strong> at the start of your 2-hour shift and <strong>Clock Out</strong> at the end.</p>
+            <div class="shift-time-row">
+                <button type="button" class="add-item-btn" style="padding: 6px 14px;" onclick="clockIn()">Clock In</button>
+                <button type="button" class="add-item-btn" style="padding: 6px 14px; background: #333; color: #fff;" onclick="clockOut()">Clock Out</button>
+            </div>
+            <p class="shift-label">Clock in: <span id="clock-in-display">—</span></p>
+            <p class="shift-label">Clock out: <span id="clock-out-display">—</span></p>
+            <p class="shift-label">Duration: <span id="clock-duration-display">—</span></p>
         </div>
 
         <!-- Today's 2-Hour Plan -->
@@ -869,12 +897,114 @@
             var el = document.getElementById('va-name');
             if (el && saved) el.value = saved;
         }
+
+        function getShiftData() {
+            const raw = localStorage.getItem('va-shift');
+            if (!raw) return null;
+            try {
+                const data = JSON.parse(raw);
+                const todayKey = new Date().toDateString();
+                if (data.date !== todayKey) return null;
+                return data;
+            } catch {
+                return null;
+            }
+        }
+
+        function saveShiftData(data) {
+            localStorage.setItem('va-shift', JSON.stringify(data));
+        }
+
+        function formatTimeShort(d) {
+            return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function formatDuration(ms) {
+            if (!ms || ms <= 0) return '—';
+            const mins = Math.round(ms / 60000);
+            const h = Math.floor(mins / 60);
+            const m = mins % 60;
+            if (h <= 0) return m + ' min';
+            return h + 'h ' + m + 'm';
+        }
+
+        function updateShiftDisplay() {
+            const data = getShiftData();
+            const inEl = document.getElementById('clock-in-display');
+            const outEl = document.getElementById('clock-out-display');
+            const durEl = document.getElementById('clock-duration-display');
+            if (!inEl || !outEl || !durEl) return;
+            if (!data || !data.in) {
+                inEl.textContent = '—';
+                outEl.textContent = '—';
+                durEl.textContent = '—';
+                return;
+            }
+            const inDate = new Date(data.in);
+            inEl.textContent = formatTimeShort(inDate);
+            if (data.out) {
+                const outDate = new Date(data.out);
+                outEl.textContent = formatTimeShort(outDate);
+                durEl.textContent = formatDuration(outDate - inDate);
+            } else {
+                outEl.textContent = '—';
+                durEl.textContent = '—';
+            }
+        }
+
+        function clockIn() {
+            const todayKey = new Date().toDateString();
+            let data = getShiftData() || { date: todayKey };
+            if (data.in && !confirm('You already clocked in. Overwrite start time?')) {
+                return;
+            }
+            const now = new Date();
+            data.date = todayKey;
+            data.in = now.toISOString();
+            if (!data.out) data.out = null;
+            saveShiftData(data);
+            updateShiftDisplay();
+        }
+
+        function clockOut() {
+            let data = getShiftData();
+            if (!data || !data.in) {
+                if (!confirm('No clock-in time recorded for today. Set clock-out only?')) return;
+                const now = new Date();
+                const todayKey = now.toDateString();
+                data = { date: todayKey, in: null, out: now.toISOString() };
+            } else {
+                const now = new Date();
+                data.out = now.toISOString();
+            }
+            saveShiftData(data);
+            updateShiftDisplay();
+        }
+
         function generateReport() {
             const date = new Date().toLocaleString();
             const vaName = (document.getElementById('va-name') && document.getElementById('va-name').value) || 'VA';
+            const shift = getShiftData();
             let out = 'VA COMMAND CENTER – END OF SHIFT REPORT\n';
             out += 'Report from: ' + vaName + '\n';
             out += 'Generated: ' + date + '\n\n';
+
+            out += '--- SHIFT TIME ---\n';
+            if (shift && shift.in) {
+                const inDate = new Date(shift.in);
+                out += 'Clock in: ' + formatTimeShort(inDate) + '\n';
+                if (shift.out) {
+                    const outDate = new Date(shift.out);
+                    out += 'Clock out: ' + formatTimeShort(outDate) + '\n';
+                    out += 'Duration: ' + formatDuration(outDate - inDate) + '\n';
+                } else {
+                    out += 'Clock out: (not recorded)\n';
+                    out += 'Duration: —\n';
+                }
+            } else {
+                out += 'Clock in/out not recorded\n';
+            }
+            out += '\n';
 
             out += '--- TASKS COMPLETED ---\n';
             document.querySelectorAll('#today-tasks-list .task-item').forEach(item => {
@@ -968,6 +1098,7 @@
             loadTemplates();
             loadEmmanuelDocLink();
             loadVAName();
+            updateShiftDisplay();
             var docLinkEl = document.getElementById('emmanuel-doc-link');
             if (docLinkEl) docLinkEl.addEventListener('blur', function() { localStorage.setItem('va-emmanuel-doc-link', this.value.trim()); });
             if (sessionStorage.getItem('va-admin') === '1') {

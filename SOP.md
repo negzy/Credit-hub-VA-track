@@ -19,6 +19,7 @@ This Command Center helps you stay organized during your 2-hour shifts, 3 days p
 | **Report for Emmanuel** | Same box | Click “Generate report for Emmanuel” → “Copy report” → paste into shared Google Doc (or email/Slack). |
 | **Status on queue rows** | Status column in each table | Use the dropdown: **New**, **In Progress**, or **Done**. |
 | **I am (VA name)** | Top of dashboard | Select your name (Elmo, Soc, etc.) so the report says "Report from: [you]". |
+| **Clock in / Clock out** | Under your name | Click **Clock In** at the start and **Clock Out** at the end of your shift. The report will include your times and total duration. |
 
 ---
 
